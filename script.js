@@ -1,40 +1,36 @@
-
-var x = document.getElementById("#weatherText");
 var tempScale = "farenheit";
 
-$("#weatherDiv").children().hide();
-$("#weatherDiv").children().fadeIn();
+$("#weatherDiv").hide();
+$("#loader").hide();
 
 function getLocation() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(showWeather);
     } else {
-        $("#weatherDiv").innerHTML = "Geolocation is not supported by this browser.";
+        $("#weatherDiv").innerHTML = "<h1>Geolocation is not supported by this browser.</h1>";
     }
 }
+
 function showWeather(position) {
 
     $.ajax({
         url: "https://fcc-weather-api.glitch.me//api/current?",
         success: function (data) {
 
-            $("#weatherDiv").children().hide();
-
             var temp;
-
-            if (tempScale == "farenheit") {
-                temp = ((data.main.temp * 9) / 5) + 32;
-            } else {
-                temp = data.main.temp;
-            }
+            (tempScale == "farenheit") ? temp = ((data.main.temp * 9) / 5) + 32 : temp = data.main.temp;
 
             $("#weatherDiv").html(
                 `
                 <h1 class="text-center">Current Weather in ` + data.name + ` is</h1> 
                 <h3>`+ temp + ` degrees ` + tempScale + `</h3>
-
+                
                 `
             );
+
+            $("#weatherDiv").fadeIn();
+            $("#loader").hide();
+            $("#updateWeather").text('Refresh');
         },
         data: {
             lon: position.coords.longitude.toFixed(2),
@@ -44,6 +40,13 @@ function showWeather(position) {
 }
 
 $("#updateWeather").click(function () {
+    $("#weatherDiv").hide();
+    $("#loader").show();
     getLocation();
+});
+
+$('document').ready(function () {
+    $('body').hide().fadeIn('slow');
+    $("#weatherDiv").fadeIn();
 });
 

@@ -22,21 +22,25 @@
             </div>
         </div>
 
-        <div id="weatherDiv" class="jumbotron text-center">
-            <h1>Waiting on your location...</h1>
-        </div>
-
-        <div class="row">
-            <div class="col mx-auto">
-                <button class="btn btn-default" id="updateWeather">Update Weather</button>
+        <div class="jumbotron text-center dblock align-middle">
+            <div id="weatherDiv">
+                <h2 class="align-middle">Waiting for your Location...</h2>
             </div>
+            <div id="loader"></div>
         </div>
+        
+        <div class="row">
+            <div class="col center-block"></div>
+            <button class="btn btn-light" id="updateWeather">Get Location</button>
+        </div>
+    </div>
 
     </div>
     <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js" integrity="sha384-feJI7QwhOS+hwpX2zkaeJQjeiwlhOP+SdQDqhgvvo1DsjtiSQByFdThsxO669S2D"
         crossorigin="anonymous"></script>
+    <script src="https://use.fontawesome.com/df866890d3.js"></script>
     <script src="./script.js"></script>
 </body>
 
