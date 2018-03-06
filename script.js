@@ -2,6 +2,7 @@ var tempScale = "farenheit";
 
 $("#weatherDiv").hide();
 $("#loader").hide();
+$("#weatherIcon").hide();
 
 function getLocation() {
     if (navigator.geolocation) {
@@ -19,17 +20,17 @@ function showWeather(position) {
 
             var temp;
             (tempScale == "farenheit") ? temp = ((data.main.temp * 9) / 5) + 32 : temp = data.main.temp;
-
+            temp = temp.toFixed(2);
             $("#weatherDiv").html(
                 `
                 <h1 class="text-center">Current Weather in ` + data.name + ` is</h1> 
                 <h3>`+ temp + ` degrees ` + tempScale + `</h3>
-                
                 `
             );
 
             $("#weatherDiv").fadeIn();
             $("#loader").hide();
+            $("#weatherIcon").fadeIn();
             $("#updateWeather").text('Refresh');
         },
         data: {
@@ -41,6 +42,7 @@ function showWeather(position) {
 
 $("#updateWeather").click(function () {
     $("#weatherDiv").hide();
+    $("#weatherIcon").hide();
     $("#loader").show();
     getLocation();
 });
