@@ -1,4 +1,5 @@
 var tempScale = "farenheit";
+var now = new Date();
 
 $("#weatherDiv").hide();
 $("#loader").hide();
@@ -23,13 +24,14 @@ function showWeather(position) {
             temp = temp.toFixed(2);
             $("#weatherDiv").html(
                 `
-                <h1 class="text-center">Current Weather in ` + data.name + ` is</h1> 
-                <h3>`+ temp + ` degrees ` + tempScale + `</h3>
-                `
+            <h1 class="text-center">Current Weather in ` + data.name + ` is</h1> 
+            <h3>`+ temp + ` degrees ` + tempScale + `</h3>
+            `
             );
 
             $("#weatherDiv").fadeIn();
             $("#loader").hide();
+
             $("#weatherIcon").fadeIn();
             $("#updateWeather").text('Refresh');
         },
