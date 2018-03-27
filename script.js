@@ -1,71 +1,48 @@
-var tempScale = "farenheit";
-var now = new Date();
+var thisDate = new Date();
 var isDayTime;
-(6 <= now.getHours() <= 20) ? isDayTime = true : isDayTime = false;
+var temp;
+var tempUOM = "farenheit";
+var weatherLocation = "Hyrule";
+var weather = "";
+var weatherDescription;
+var isLoading = false;
 
-
-$("#weatherDiv").hide();
+$("body").hide();
+$("#weather-div").hide();
 $("#loader").hide();
-$("#weatherIcon").hide();
+$("#weather-icon").hide();
 
-function getLocation() {
+function convertToFarenheit(tempinCelsius) {
+    return (tempinCelsius * (9 / 5) + 32);
+}
+
+function convertToCelsius(tempinFarenheit) {
+    return ((tempinFarenheit - 32) * (5 / 9));
+}
+
+function getLocation() {  // Get local Position
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showWeather);
+        navigator.geolocation.getCurrentPosition(getWeather);
     } else {
-        $("#weatherDiv").innerHTML = "<h1>Geolocation is not supported by this browser.</h1>";
+        $("#weather-div").innerHTML = "<h1>Geolocation is not supported by this browser.</h1>";
     }
 }
 
-function showWeather(position) {
+function getWeather(position) { // Get local weather using local position and fcc weather api
 
     $.ajax({
         url: "https://fcc-weather-api.glitch.me//api/current?",
-        timeout: 1000,
         success: function (data) {
 
-            var temp;
-            (tempScale == "farenheit") ? temp = ((data.main.temp * 9) / 5) + 32 : temp = data.main.temp;
-            temp = temp.toFixed(2);
-            $("#weatherDiv").html(
-                `
-            <h1 class="text-center">Current Weather in ` + data.name + ` is</h1> 
-            <h3>`+ temp + ` degrees ` + tempScale + ` - ` + data.weather[0].description.capitalize() + `.</h3>
-            `
-            );
+            weatherLocation = data.name;
+            weather = data.weather[0].main;
+            weatherDescription = data.weather[0].description;
 
-            $("#weatherDiv").fadeIn();
-            $("#loader").hide();
-
-            // Check Weather Type
-            switch (data.weather[0].main) {
-                case "Rain":
-                    $('#weatherIcon').html('<i id="weatherIcon" class="wi wi-rain"></i>');
-                    break;
-                case "Clouds":
-                    $('#weatherIcon').html('<i id="weatherIcon" class="wi wi-cloudy"></i>');
-                    break;
-                case "Drizzle":
-                    $('#weatherIcon').html('<i id="weatherIcon" class="wi wi-raindrops"></i>');
-                    break;
-                case "Snow":
-                    $('#weatherIcon').html('<i id="weatherIcon" class="wi wi-snow"></i>');
-                    break;
-                case "Clear":
-                    $('#weatherIcon').html('<i id="weatherIcon" class="wi wi-day-sunny"></i>');
-                    break;
-                case "Thunderstorm":
-                    $('#weatherIcon').html('<i id="weatherIcon" class="wi wi-thunderstorm"></i>');
-                    break;
-                case "Mist":
-                    $('#weatherIcon').html('<i id="weatherIcon" class="wi wi-fog"></i>');
-                    break;
-                default:
-                    $('#weatherIcon').html('<i id="weatherIcon" class="wi wi-day-sunny"></i>');
-            }
-
-            // Choose weather icon
-            $("#weatherIcon").fadeIn();
-            $("#updateWeather").text('Refresh');
+            (tempUOM === "farenheit") ? temp = convertToFarenheit(data.main.temp) : temp = data.main.temp;
+            showWeather(weatherLocation, temp.toFixed(2), weather, weatherDescription);
+            isLoading = false;
+            $("#get-weather-button").prop('disabled', false);
+            $("#get-weather-button").text("Refresh Weather");
         },
         data: {
             lon: position.coords.longitude.toFixed(2),
@@ -79,18 +56,82 @@ function showWeather(position) {
             }
         }
     });
+
 }
 
-$("#updateWeather").click(function () {
-    $("#weatherDiv").hide();
-    $("#weatherIcon").hide();
-    $("#loader").show();
-    getLocation();
+$("#get-weather-button").click(function () {
+    if (!isLoading) {
+        isLoading = true;
+        $("#get-weather-button").prop('disabled', true);
+        $("#get-weather-button").text("loading");
+        $("#weather-div").hide();
+        $("#weather-icon").hide();
+        $("#loader").show();
+        getLocation();
+    }
+});
+
+function showWeather(location, temp, weather, description) {
+    $("#weather-div").html(
+        `
+    <h1 class="text-center">Current Weather in ` + location + ` is</h1> 
+    <h3>`+ temp + ` degrees ` + tempUOM + ` - ` + description.capitalize() + `.</h3>
+    `
+    );
+    // Check Weather Type
+    switch (weather) {
+        case "Rain":
+            $('#weather-icon').html('<i id="weather-icon" class="wi wi-rain"></i>');
+            break;
+        case "Clouds":
+            $('#weather-icon').html('<i id="weather-icon" class="wi wi-cloudy"></i>');
+            break;
+        case "Drizzle":
+            $('#weather-icon').html('<i id="weather-icon" class="wi wi-raindrops"></i>');
+            break;
+        case "Snow":
+            $('#weather-icon').html('<i id="weather-icon" class="wi wi-snow"></i>');
+            break;
+        case "Clear":
+            $('#weather-icon').html('<i id="weather-icon" class="wi wi-day-sunny"></i>');
+            break;
+        case "Thunderstorm":
+            $('#weather-icon').html('<i id="weather-icon" class="wi wi-thunderstorm"></i>');
+            break;
+        case "Mist":
+            $('#weather-icon').html('<i id="weather-icon" class="wi wi-fog"></i>');
+            break;
+        default:
+            $('#weather-icon').html('<i id="weather-icon" class="wi wi-day-sunny"></i>');
+    }
+    $("#weather-div").fadeIn();
+    $("#loader").hide();
+    $("#weather-icon").fadeIn();
+    $("#get-weather-button").text('Refresh Weather');
+}
+
+$("#uom-toggle-button").click(function () {
+
+    if (tempUOM == "farenheit") {
+        (tempUOM = "celsius");
+        $("#uom-toggle-button").text("Switch to Farenheit");
+    } else {
+        (tempUOM = "farenheit");
+        $("#uom-toggle-button").text("Switch to Celsius");
+    }
+
+    if (weather) {
+        (tempUOM == "farenheit") ? temp = convertToFarenheit(temp) : temp = convertToCelsius(temp);
+        showWeather(weatherLocation, temp.toFixed(2), weather, weatherDescription);
+    }
 });
 
 $('document').ready(function () {
+    // Check if daytime
+    (6 <= thisDate.getHours() <= 20) ? isDayTime = true : isDayTime = false;
+    // Show page
     $('body').hide().fadeIn('slow');
-    $("#weatherDiv").fadeIn();
+    $("#weather-div").fadeIn();
 });
 
 String.prototype.capitalize = function () {

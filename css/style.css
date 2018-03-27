@@ -13,7 +13,7 @@ i {
     font-size: 3.5vw;
 }
 
-#weatherDiv {
+#weather-div {
     height: 50%;
 }
 
@@ -34,12 +34,13 @@ i {
 #loader {
     margin: 5% auto 5% auto;
     border: 8px solid #f3f3f3; /* Light grey */
-    border-top: 8px solid black; 
+    border-top: 8px solid transparent; 
     border-radius: 50%;
     width: 60px;
     height: 60px;
     animation: spin 1.5s linear infinite;
 }
+
 
 @keyframes spin {
     0% { transform: rotate(0deg); }

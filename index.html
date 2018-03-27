@@ -24,17 +24,22 @@
             </div>
         </div>
 
-        <div class="jumbotron text-center dblock align-middle">
-            <div id="weatherDiv">
+        <div class="jumbotron text-center">
+            <div id="weather-div">
                 <h2 class="align-middle">Waiting for your Location...</h2>
             </div>
-            <i id="weatherIcon" class="wi wi-sunny"></i>
+            <br>
+            <i id="weather-icon" class="wi wi-sunny"></i>
             <div id="loader"></div>
         </div>
 
         <div class="row">
-            <div class="col center-block"></div>
-            <button class="btn btn-light" id="updateWeather">Get Location</button>
+            <div class="col text-center">
+                <button class="btn btn-light" id="get-weather-button">Get Location</button>
+            </div>
+            <div class="col text-center">
+                <button class="btn btn-light" id="uom-toggle-button">Switch to Celsius</button>
+            </div>
         </div>
     </div>
 
